@@ -69,6 +69,7 @@ var repeatNum = null;
 var lastButtonType = null;
 var lastOperator = null;
 var tempOperator = null;
+let adjust = 0;
 //Initializing display
 let display = document.querySelector('.text');
 display.textContent = "0";
@@ -275,6 +276,17 @@ buttons.forEach(button => {
             display.textContent = display.textContent.replace("-","");
             display.textContent = "-" + display.textContent;
         }
-        // console.log('clicked');
+
+        //Adjusting size based on how long the display text is
+        if(display.textContent.length > 10){
+            adjust += 0.2;
+            let newFont = Math.max(8-adjust,2)
+            display.style.fontSize = String(newFont) + "vh";
+            console.log(adjust);
+            console.log(display.style.fontSize);
+        }
+        else{
+            display.style.fontSize = "8vh";
+        }
     })
 });

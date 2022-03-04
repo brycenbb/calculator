@@ -24,7 +24,7 @@ body {
 }
 
 .display {
-    flex: 2 1 0;
+    flex: 1.5 1 0;
     /* width: auto; */
     border: 2px solid black;
     background-color: lightslategrey;
@@ -38,11 +38,13 @@ body {
 }
 
 .text {
-    font-size: 10vh;
-    text-align: center;
+    font-size: 8vh;
+    flex: 0 1 0;
+    text-align: right;
     padding-right: 0.2em;
     box-sizing: border-box;
     padding-top: 0.2em;
+    max-width: 75vw;
 }
 
 .row {
