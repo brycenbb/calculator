@@ -33,18 +33,19 @@ function operate(operator, num1, num2){
         
     }
 }
-var currentDisplay = ""
+var currentDisplay = "0";
 var firstNum = null;
 var secondNum = null;
 var lastPress = "";
 var lastDisplay = "";
 var operator;
+var lastSymbol = null;
 
 let display = document.querySelector('.text');
-
+display.textContent = "0";
 //Handling button clicks
 const buttons = document.querySelectorAll('button');
-
+console.log(display.textContent);
 // Im going about this the wrong way, the order is
 // pick first number, then pick operator, then pick 2nd number
 
@@ -53,15 +54,14 @@ buttons.forEach(button => {
         
         //Decimal button
         if(button.classList.contains('decimal')){
-            if(display.textContent.search(".") != -1) {
+            if(!(display.textContent.search(/\./) === -1)) {
                 return;
             }
             currentDisplay = currentDisplay + "."
+            display.textContent = currentDisplay;
         }
-
-
         //Operator buttons
-        if(button.classList.contains('symbol')) {
+        else if(button.classList.contains('symbol')) {
             switch(button.textContent){
                 case ("\u00F7"):
                     operator = "divide";
@@ -75,48 +75,81 @@ buttons.forEach(button => {
                     operator = "equals"
             }
 
+            // button.parentNode.style.border = "3px solid black";
+            // button.parentNode.style.width = String(button.parentNode.style.width - 2);
+            
+
+            //Highlighting most recent symbol pressed
+            button.parentNode.style.backgroundColor = "darkorange";
+
+            if(lastSymbol != null){
+                // lastSymbol.parentNode.style.border = "1px solid black";
+                lastSymbol.parentNode.style.backgroundColor = "orange";
+
+            }
+            lastSymbol = button;
+
+
             //Not resetting number if multiple symbols are hit in a row
             if(firstNum === null){
                 firstNum = Number(display.textContent);
             }
             //resetting display for next number input
-            currentDisplay = "";
+            currentDisplay = "0";
             console.log(firstNum);
             return;
         }
-        
-        //Clear button functionality 
-        if(this.textContent === "AC"){
-            display.textContent = "";
-            currentDisplay = "";
+        //Clear button functionality, need to restructure for 2 presses
+        else if(this.textContent === "AC"){
+            display.textContent = "0";
+            currentDisplay = "0";
             lastDisplay = "";
             ;
         }
-        // Checking if it is either percentage or plus/minus
-        else if(this.textContent === "\uFF05" || this.textContent === "\u00B1"){
-            if(this.textContent === "\u00B1"){
-                if(currentDisplay.charAt(0) === "-"){
-                    currentDisplay = currentDisplay.replace("-",""); 
-                    display.textContent = currentDisplay;
-                }
-                else{
-                    currentDisplay = "-" + currentDisplay;
-                    display.textContent = currentDisplay;
-                }
+        // Alternating between plus/minus
+        else if(this.textContent === "\u00B1"){
+            if(currentDisplay.charAt(0) === "-"){
+                currentDisplay = currentDisplay.replace("-",""); 
+                display.textContent = currentDisplay;
             }
-            else {//percentage change stuff}
+            else{
+                currentDisplay = "-" + currentDisplay;
+                display.textContent = currentDisplay;
+            }
+        }
+        //Percentage button
+        else if(button.classList.contains('percentage')){
+            if(display.textContent.search(/\./) != -1){
+                // let index = display.textContent.search(".")
+                // display.textContent = display.textContent.replace(".","");
+
+                //Accounting for leading zeroes in small numbers
+                if(index < 2) {
+
+                }
             }
         }
         //Else is just a normal number
         else{
             lastDisplay = currentDisplay;
             currentDisplay = currentDisplay + this.textContent;
+
             //Prevents leading zeros
             if((currentDisplay.charAt(0) === "0") && (currentDisplay.length > 1)){
                 currentDisplay = currentDisplay.slice(1);
             }
             display.textContent = currentDisplay;
             
+        }
+
+        //Outside conditions checking for type of button
+        //
+        //
+
+        //Accounting for leftmost zero for readability
+        if(display.textContent.charAt(0) === "."){
+            display.textContent = "0" + display.textContent;
+            currentDisplay = display.textContent;
         }
         // console.log('clicked');
     })
