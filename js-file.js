@@ -75,6 +75,11 @@ let display = document.querySelector('.text');
 display.textContent = "0";
 
 
+//current bug: does not clear after a sum when the user 
+// tries to operate on two new numbers
+// Also the text just gets smaller if the length is over
+// 10 and you hit the +/- button over and over
+
 //Handling button clicks
 const buttons = document.querySelectorAll('button');
 
