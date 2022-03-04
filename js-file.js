@@ -107,6 +107,8 @@ buttons.forEach(button => {
                 if((firstNum != null) && secondNum != null){
                     console.log("got to right before operator function");
                     display.textContent = String(operate(operator,firstNum,secondNum));
+                    firstNum = Number(display.textContent);
+                    secondNum = null;
                 }
                 equate = false;
             }
