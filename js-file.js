@@ -172,7 +172,7 @@ buttons.forEach(button => {
             return;
             //End of operator button functionality
         }
-        //Clear button functionality, need to restructure for 2 presses
+        //Clear button functionality
         else if(this.textContent === "AC"){
             display.textContent = "0";
             currentDisplay = "0";
@@ -181,6 +181,7 @@ buttons.forEach(button => {
             secondNum = null;
             repeatNum = null;
             lastEquate = false;
+            adjust = 0;
 
             if(lastSymbol != null){
                 lastSymbol.parentNode.style.backgroundColor = "orange";
@@ -279,14 +280,27 @@ buttons.forEach(button => {
 
         //Adjusting size based on how long the display text is
         if(display.textContent.length > 10){
-            adjust += 0.2;
-            let newFont = Math.max(8-adjust,2)
+            adjust += 0.3;
+            if(display.textContent.length > 20) {
+                adjust -= 0.15;
+            }
+            let newFont = Math.max(8-adjust,2.5);
             display.style.fontSize = String(newFont) + "vh";
             console.log(adjust);
             console.log(display.style.fontSize);
         }
         else{
             display.style.fontSize = "8vh";
+        }
+
+        if(display.textContent.length > 30) {
+            setTimeout(function() {
+                display.textContent = "ERROR"
+            },300)
+            const force = new Event('click');
+            const element = document.querySelector('#clear');
+            element.dispatchEvent(force);
+
         }
     })
 });
