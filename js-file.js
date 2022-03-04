@@ -44,15 +44,16 @@ function operate(operator, num1, num2){
 var currentDisplay = "0";
 var firstNum = null;
 var secondNum = null;
-var lastPress = "";
 var lastDisplay = "";
-var operator;
+var operator = null;
 var lastSymbol = null;
 var lastAC = null;
 var equate = false;
 var lastEquate = false;
 var repeatNum = null;
-
+var lastButtonType = null;
+var lastOperator = null;
+var tempOperator = null;
 //Initializing display
 let display = document.querySelector('.text');
 display.textContent = "0";
@@ -101,13 +102,13 @@ buttons.forEach(button => {
             //Not resetting number if multiple symbols are hit in a row
             if(firstNum === null){
                 firstNum = Number(display.textContent);
-            }
-            else{
-                secondNum = Number(display.textContent);
+                console.log(firstNum);
             }
 
-            if((firstNum != null) && secondNum != null){
+            if((firstNum != null) && (secondNum != null) && lastButtonType === "number"){
                 equate = true;
+                tempOperator = operator;
+                operator = lastOperator;
             }
             
             //Highlighting only most recent symbol pressed
@@ -122,9 +123,9 @@ buttons.forEach(button => {
             if(firstNum === null){
                 firstNum = Number(display.textContent);
             }
+
             //Resetting display for next number input
             currentDisplay = "0";
-            console.log(firstNum);
 
             //Equals functionality
             if(equate) {
@@ -145,6 +146,13 @@ buttons.forEach(button => {
                 
                 equate = false;
             }
+            if(tempOperator != null){
+                operator = tempOperator;
+                tempOperator = null;
+            }
+            lastButtonType = "symbol";
+            lastOperator = operator;
+
             return;
             //End of operator button functionality
         }
@@ -218,8 +226,14 @@ buttons.forEach(button => {
         }
         //Else is just a normal number
         else{
+            lastButtonType = "number";
             repeatNum = null;
             lastEquate = false;
+
+            if(firstNum != null){
+                secondNum = Number(this.textContent);
+                console.log(secondNum);
+            }
 
             lastDisplay = currentDisplay;
             currentDisplay = currentDisplay + this.textContent;
