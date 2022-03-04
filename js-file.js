@@ -1,11 +1,11 @@
 //Calculator functions
 
 function add(num1, num2) {
-    return (num1 + num2).toFixed(6);
+    return trim((num1 + num2).toFixed(6));
 }
 
 function subtract(num1, num2) {
-    return (num1 - num2).toFixed(6);
+    return trim((num1 - num2).toFixed(6));
 }
 
 function multiply(num1, num2) {
@@ -98,6 +98,18 @@ buttons.forEach(button => {
                     break;
             }
 
+            //Not resetting number if multiple symbols are hit in a row
+            if(firstNum === null){
+                firstNum = Number(display.textContent);
+            }
+            else{
+                secondNum = Number(display.textContent);
+            }
+
+            if((firstNum != null) && secondNum != null){
+                equate = true;
+            }
+            
             //Highlighting only most recent symbol pressed
             button.parentNode.style.backgroundColor = "darkorange";
             if(lastSymbol != null){
