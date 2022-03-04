@@ -41,6 +41,22 @@ function operate(operator, num1, num2){
             console.log("ERROR IN OPERATOR FUNCTION");
     }
 }
+
+//Click transition event 
+const buttonsNoSymbols = document.querySelectorAll('button:not(.symbol)');
+console.table(buttonsNoSymbols);
+buttonsNoSymbols.forEach(element => {
+    element.addEventListener('click', function() {
+        element.parentNode.classList.add('.brighter');
+        setTimeout(function() {
+            element.parentNode.classList.remove('.brighter');
+        },10000)
+    })
+});
+
+
+
+
 var currentDisplay = "0";
 var firstNum = null;
 var secondNum = null;

@@ -111,3 +111,7 @@ button {
     height: 100%;
     flex: 1 1 0;
 }
+
+.brighter {
+    filter: brightness(1.5);
+}
