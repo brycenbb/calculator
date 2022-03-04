@@ -18,18 +18,17 @@ function divide(num1, num2) {
 
 function operate(operator, num1, num2){
     switch(operator) {
-        case "+":
+        case "add":
             return add(num1, num2);
-        case "-":
+        case "subtract":
             return subtract(num1, num2);
-        case "*":
+        case "multiply":
             return multiply(num1, num2);
-        case "/":
+        case "divide":
             return divide(num1, num2);
         default:
-            //Operator was not the right type,
-            //Need to wait till user inputs 
-            //The right type.
+            //Should not get here
+            console.log("ERROR IN OPERATOR FUNCTION");
         
     }
 }
@@ -40,14 +39,15 @@ var lastPress = "";
 var lastDisplay = "";
 var operator;
 var lastSymbol = null;
+var lastAC = null;
+var equate = false;
 
 let display = document.querySelector('.text');
 display.textContent = "0";
 //Handling button clicks
 const buttons = document.querySelectorAll('button');
 console.log(display.textContent);
-// Im going about this the wrong way, the order is
-// pick first number, then pick operator, then pick 2nd number
+
 
 buttons.forEach(button => {
     button.addEventListener('click', function() {
@@ -65,27 +65,30 @@ buttons.forEach(button => {
             switch(button.textContent){
                 case ("\u00F7"):
                     operator = "divide";
+                    break;
                 case ("\u00D7"):
                     operator = "multiply";
+                    break;
                 case ("-"):
                     operator = "subtract";
+                    break;
                 case ("+"):
                     operator = "add";
+                    console.log("got to setting teh add flag");
+                    break;
                 case ("="):
-                    operator = "equals"
+                    console.log("setting equate to true, = was pressed");
+                    equate = true;
+                    secondNum = Number(display.textContent);
+                    console.log("firstNum", firstNum);
+                    console.log("secondNum", secondNum);
+                    break;
             }
 
-            // button.parentNode.style.border = "3px solid black";
-            // button.parentNode.style.width = String(button.parentNode.style.width - 2);
-            
-
-            //Highlighting most recent symbol pressed
+            //Highlighting only most recent symbol pressed
             button.parentNode.style.backgroundColor = "darkorange";
-
             if(lastSymbol != null){
-                // lastSymbol.parentNode.style.border = "1px solid black";
                 lastSymbol.parentNode.style.backgroundColor = "orange";
-
             }
             lastSymbol = button;
 
@@ -97,14 +100,30 @@ buttons.forEach(button => {
             //Resetting display for next number input
             currentDisplay = "0";
             console.log(firstNum);
+
+            //Equals functionality
+            if(equate) {
+                console.log("got inside equate check");
+                if((firstNum != null) && secondNum != null){
+                    console.log("got to right before operator function");
+                    display.textContent = String(operate(operator,firstNum,secondNum));
+                }
+                equate = false;
+            }
             return;
+            //End of operator button functionality
         }
         //Clear button functionality, need to restructure for 2 presses
         else if(this.textContent === "AC"){
             display.textContent = "0";
             currentDisplay = "0";
             lastDisplay = "";
-            ;
+            firstNum = null;
+            secondNum = null;
+            if(lastSymbol != null){
+                lastSymbol.parentNode.style.backgroundColor = "orange";
+                lastSymbol = null;
+            }
         }
         // Alternating between plus/minus
         else if(this.textContent === "\u00B1"){
@@ -157,7 +176,7 @@ buttons.forEach(button => {
         else{
             lastDisplay = currentDisplay;
             currentDisplay = currentDisplay + this.textContent;
-
+            
             //Prevents leading zeros
             if((currentDisplay.charAt(0) === "0") && (currentDisplay.length > 1)){
                 currentDisplay = currentDisplay.slice(1);
