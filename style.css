@@ -18,7 +18,6 @@ body {
     width: 0;
     justify-content: center;
     align-items: stretch;
-    background-color: darkkhaki;
     border-radius: 10px;
     flex-direction: column;
     box-sizing: border-box;
@@ -54,12 +53,6 @@ body {
 
 }
 
-.row.first {
-    background-color: grey;
-    flex: 1 1 0;
-    box-sizing: border-box;
-}
-
 .box {
     flex: 1 1 0;
     border: 1px solid black;
@@ -69,11 +62,25 @@ body {
     align-items: center;
 }
 
+.row .box {
+    background-color: darkkhaki;
+}
+
+#firstRow .box {
+    background-color: grey;
+    flex: 1 1 0;
+    box-sizing: border-box;
+}
+
 .row .box:last-child {
     background-color: orange;
     box-sizing: border-box;
 }
 
+#firstRow .box:last-child {
+    background-color: orange;
+    box-sizing: border-box;
+}
 .right .box:last-child {
     border-bottom-right-radius: 10px;
 }
@@ -112,6 +119,6 @@ button {
     flex: 1 1 0;
 }
 
-.brighter {
-    filter: brightness(1.5);
+.box.brighter {
+    filter: brightness(1.25);
 }
