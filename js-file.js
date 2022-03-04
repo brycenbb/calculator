@@ -191,13 +191,13 @@ buttons.forEach(button => {
             repeatNum = null;
             lastEquate = false;
 
-            if(currentDisplay.charAt(0) === "-"){
+            if(display.textContent.charAt(0) === "-"){
                 currentDisplay = currentDisplay.replace("-",""); 
-                display.textContent = currentDisplay;
+                display.textContent = display.textContent.replace("-","");
             }
             else{
                 currentDisplay = "-" + currentDisplay;
-                display.textContent = currentDisplay;
+                display.textContent = "-" + display.textContent;
             }
         }
         //Percentage button
@@ -269,6 +269,11 @@ buttons.forEach(button => {
         if(display.textContent.charAt(0) === "."){
             display.textContent = "0" + display.textContent;
             currentDisplay = display.textContent;
+        }
+        //Making sure negative symbol is the leftmost item
+        if((display.textContent.search('-') != -1) && (display.textContent.charAt(0) != "-")){
+            display.textContent = display.textContent.replace("-","");
+            display.textContent = "-" + display.textContent;
         }
         // console.log('clicked');
     })
