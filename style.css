@@ -43,7 +43,7 @@ body {
     text-align: center;
     padding-right: 0.2em;
     box-sizing: border-box;
-
+    padding-top: 0.2em;
 }
 
 .row {
@@ -60,13 +60,6 @@ body {
     box-sizing: border-box;
 }
 
-.left .box {
-    box-sizing: border-box;
-    border-bottom-left-radius: 10px;
-    flex: 2 1 0;
-
-}
-
 .box {
     flex: 1 1 0;
     border: 1px solid black;
@@ -76,17 +69,32 @@ body {
     align-items: center;
 }
 
-.right .box:last-child {
+.row .box:last-child {
     background-color: orange;
     box-sizing: border-box;
+}
+
+.right .box:last-child {
     border-bottom-right-radius: 10px;
 }
 
+#zero {
+    background-color: darkkhaki;
+    border-bottom-right-radius: 0;
+    box-sizing: border-box;
+}
 
 .left,
 .right {
     display: flex;
     flex: 1 1 0;
+}
+
+.row .left .box {
+    box-sizing: border-box;
+    border-bottom-left-radius: 10px;
+    flex: 2 1 0;
+
 }
 
 button {
