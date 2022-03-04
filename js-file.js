@@ -42,15 +42,14 @@ function operate(operator, num1, num2){
     }
 }
 
-//Click transition event 
+//Click transition event
 const buttonsNoSymbols = document.querySelectorAll('button:not(.symbol)');
-console.table(buttonsNoSymbols);
 buttonsNoSymbols.forEach(element => {
     element.addEventListener('click', function() {
-        element.parentNode.classList.add('.brighter');
+        element.parentNode.classList.add('brighter');
         setTimeout(function() {
-            element.parentNode.classList.remove('.brighter');
-        },10000)
+            element.parentNode.classList.remove('brighter');
+        },50)
     })
 });
 
