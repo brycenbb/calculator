@@ -94,7 +94,7 @@ buttons.forEach(button => {
             if(firstNum === null){
                 firstNum = Number(display.textContent);
             }
-            //resetting display for next number input
+            //Resetting display for next number input
             currentDisplay = "0";
             console.log(firstNum);
             return;
@@ -120,12 +120,36 @@ buttons.forEach(button => {
         //Percentage button
         else if(button.classList.contains('percentage')){
             if(display.textContent.search(/\./) != -1){
-                // let index = display.textContent.search(".")
-                // display.textContent = display.textContent.replace(".","");
+                let index = display.textContent.search(/\./);
+                display.textContent = display.textContent.replace(".","");
+                if(index < 2){
+                    let counter = index;
 
-                //Accounting for leading zeroes in small numbers
-                if(index < 2) {
+                    //Accounting for leading zeroes in smaller numbers
+                    while(counter < 2){
+                        counter++;
+                        display.textContent = "0" + display.textContent;
+                    }
+                    display.textContent = "0." + display.textContent;
+                    return;
+                }
+                //There are at least 2 numbers to the left of the '.'
+                if(index === 2){
+                    display.textContent = "." + display.textContent;
+                }
+                else{
+                    display.textContent = display.textContent.slice(0,index-2) + "." + display.textContent.slice(index-2);
+                }
 
+            }
+            //There is no '.' currently in the number
+            else{
+                let length = display.textContent.length -1;
+                if(length === 2) {
+                    display.textContent = "." + display.textContent;
+                }
+                else{
+                    display.textContent = display.textContent.slice(0,length-1) + "." + display.textContent.slice(length-1);
                 }
             }
         }
