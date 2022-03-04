@@ -41,6 +41,8 @@ var operator;
 var lastSymbol = null;
 var lastAC = null;
 var equate = false;
+var lastEquate = false;
+var repeatNum = null;
 
 let display = document.querySelector('.text');
 display.textContent = "0";
@@ -59,6 +61,7 @@ buttons.forEach(button => {
             }
             currentDisplay = currentDisplay + "."
             display.textContent = currentDisplay;
+            repeatNum = null;
         }
         //Operator buttons
         else if(button.classList.contains('symbol')) {
@@ -104,12 +107,20 @@ buttons.forEach(button => {
             //Equals functionality
             if(equate) {
                 console.log("got inside equate check");
-                if((firstNum != null) && secondNum != null){
-                    console.log("got to right before operator function");
-                    display.textContent = String(operate(operator,firstNum,secondNum));
+                if(lastEquate){
+                    console.log("got inside multi equals");
+                    display.textContent = String(operate(operator,firstNum,repeatNum));
                     firstNum = Number(display.textContent);
-                    secondNum = null;
                 }
+                else if((firstNum != null) && secondNum != null){
+                        console.log("got to right before operator function");
+                        display.textContent = String(operate(operator,firstNum,secondNum));
+                        firstNum = Number(display.textContent);
+                        repeatNum = secondNum;
+                        secondNum = null;    
+                        lastEquate = true;
+                }
+                
                 equate = false;
             }
             return;
@@ -122,6 +133,9 @@ buttons.forEach(button => {
             lastDisplay = "";
             firstNum = null;
             secondNum = null;
+            repeatNum = null;
+            lastEquate = false;
+
             if(lastSymbol != null){
                 lastSymbol.parentNode.style.backgroundColor = "orange";
                 lastSymbol = null;
@@ -129,6 +143,9 @@ buttons.forEach(button => {
         }
         // Alternating between plus/minus
         else if(this.textContent === "\u00B1"){
+            repeatNum = null;
+            lastEquate = false;
+
             if(currentDisplay.charAt(0) === "-"){
                 currentDisplay = currentDisplay.replace("-",""); 
                 display.textContent = currentDisplay;
@@ -140,6 +157,9 @@ buttons.forEach(button => {
         }
         //Percentage button
         else if(button.classList.contains('percentage')){
+            repeatNum = null;
+            lastEquate = false;
+
             if(display.textContent.search(/\./) != -1){
                 let index = display.textContent.search(/\./);
                 display.textContent = display.textContent.replace(".","");
@@ -176,6 +196,9 @@ buttons.forEach(button => {
         }
         //Else is just a normal number
         else{
+            repeatNum = null;
+            lastEquate = false;
+
             lastDisplay = currentDisplay;
             currentDisplay = currentDisplay + this.textContent;
             
