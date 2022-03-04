@@ -1,19 +1,29 @@
 //Calculator functions
 
 function add(num1, num2) {
-    return num1 + num2;
+    return (num1 + num2).toFixed(6);
 }
 
 function subtract(num1, num2) {
-    return num1 - num2;
+    return (num1 - num2).toFixed(6);
 }
 
 function multiply(num1, num2) {
-    return num1 * num2;
+    return trim((num1 * num2).toFixed(6));
 }
 
 function divide(num1, num2) {
-    return num1/num2;
+    return trim((num1/num2).toFixed(6));
+}
+
+function trim (string) {
+    while(string.charAt(string.length-1) === "0"){
+        string = string.slice(0,string.length -1);
+    }
+    if(string.charAt(string.length-1)=== ".") {
+        string = string.slice(0,string.length -1);
+    }
+    return string;
 }
 
 function operate(operator, num1, num2){
@@ -29,7 +39,6 @@ function operate(operator, num1, num2){
         default:
             //Should not get here
             console.log("ERROR IN OPERATOR FUNCTION");
-        
     }
 }
 var currentDisplay = "0";
@@ -44,12 +53,13 @@ var equate = false;
 var lastEquate = false;
 var repeatNum = null;
 
+//Initializing display
 let display = document.querySelector('.text');
 display.textContent = "0";
+
+
 //Handling button clicks
 const buttons = document.querySelectorAll('button');
-console.log(display.textContent);
-
 
 buttons.forEach(button => {
     button.addEventListener('click', function() {
@@ -109,12 +119,12 @@ buttons.forEach(button => {
                 console.log("got inside equate check");
                 if(lastEquate){
                     console.log("got inside multi equals");
-                    display.textContent = String(operate(operator,firstNum,repeatNum));
+                    display.textContent = operate(operator,firstNum,repeatNum);
                     firstNum = Number(display.textContent);
                 }
                 else if((firstNum != null) && secondNum != null){
                         console.log("got to right before operator function");
-                        display.textContent = String(operate(operator,firstNum,secondNum));
+                        display.textContent = operate(operator,firstNum,secondNum);
                         firstNum = Number(display.textContent);
                         repeatNum = secondNum;
                         secondNum = null;    
