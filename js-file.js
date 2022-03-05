@@ -1,4 +1,5 @@
 //Calculator functions
+// <!-- Before refactoring -->
 
 function add(num1, num2) {
     return trim((num1 + num2).toFixed(6));
