@@ -1,4 +1,3 @@
-
 //Calculator functions
 function add(num1, num2) {
     return trim((num1 + num2).toFixed(6));
@@ -13,6 +12,9 @@ function multiply(num1, num2) {
 }
 
 function divide(num1, num2) {
+    if(num2 === 0){
+        return "can't do that!";
+    }
     return trim((num1/num2).toFixed(6));
 }
 
@@ -45,7 +47,7 @@ function operate(operator, num1, num2){
 function plusMinusPressed() {
     repeatNum1 = null;
     repeatNum2 = null;
-    lastEquate = false;
+    // lastEquate = false;
     if((display.textContent.length === 1) && (display.textContent === "0")){
         return;
     }
@@ -135,22 +137,6 @@ function clearPressed() {
 }
 
 function symbolPressed(button){
-
-    if(lastButtonType === "number"){
-        if(firstNum === null){
-            firstNum = Number(display.textContent);
-        }
-        else{
-            secondNum = Number(display.textContent);
-            equate = true;
-            console.log(secondNum);
-        }
-    }
-
-    console.log("firstNum", firstNum);
-    console.log("secondNum", secondNum);
-    console.log("equate", equate);
-
     switch(button.textContent){
         case ("\u00F7"):
             operator = "divide";
@@ -166,26 +152,49 @@ function symbolPressed(button){
             // console.log("got to setting teh add flag");
             break;
         case ("="):
-            console.log("setting equate to true, = was pressed");
             equate = true;
             secondNum = Number(display.textContent);
-            // console.log("firstNum", firstNum);
-            // console.log("secondNum", secondNum);
             break;
     }
 
-    //Not resetting number if multiple symbols are hit in a row
+    //Recording first or second number, in that order
     if(firstNum === null){
         firstNum = Number(display.textContent);
-        // console.log(firstNum);
     }
+    else{
+        secondNum = Number(display.textContent);
+    }
+
+
+    // //Storing display number in first num unless equals is hit
+    // if(button.textContent != "="){
+    //     firstNum = Number(display.textContent);
+    // }
+
+    console.log("firstNum", firstNum);
+    console.log("second num", secondNum);
+    console.log("lastButtonType", lastButtonType);
+
     //Handles continuous evaluation without needing to hit "="
     if((firstNum != null) && (secondNum != null) && lastButtonType === "number"){
         equate = true;
         tempOperator = operator;
         operator = lastOperator;
     }
-    
+
+    //Storing last button type in case need to set first and second num again
+    if(button.textContent != "="){
+        lastButtonType = "symbol";
+    }
+    else{
+        lastButtonType = "equals";
+    }
+
+    //Not resetting number if multiple symbols are hit in a row
+    if(firstNum === null){
+        firstNum = Number(display.textContent);
+    }
+
     //Highlighting only most recent symbol pressed
     if(lastSymbol != null){
         lastSymbol.parentNode.style.backgroundColor = "orange";
@@ -193,16 +202,8 @@ function symbolPressed(button){
     button.parentNode.style.backgroundColor = "darkorange";
     lastSymbol = button;
 
-
-    //Not resetting number if multiple symbols are hit in a row
-    if(firstNum === null){
-        firstNum = Number(display.textContent);
-    }
-
     //Resetting display for next number input
     currentDisplay = "0";
-
-    lastButtonType = "symbol";
 
     //Equals functionality
     if(equate) {
@@ -212,14 +213,15 @@ function symbolPressed(button){
             repeatNum2 = Number(display.textContent);
             display.textContent = operate(operator,repeatNum2,repeatNum1);
             // firstNum = Number(display.textContent);
-            secondNum = null;
+            // secondNum = null;
         }
         else if((firstNum != null) && secondNum != null){
                 console.log("operating!");
                 display.textContent = operate(operator,firstNum,secondNum);
+                firstNum = Number(display.textContent);
                 repeatNum1 = secondNum;
-                secondNum = null;
-                firstNum = null;
+                // secondNum = null;
+                // firstNum = null;
                 //Putting this in makes it so continuous evaluation works but breaks
                 //independent evaluation....SAD.
                 // firstNum = Number(display.textContent);
@@ -228,7 +230,6 @@ function symbolPressed(button){
         
         equate = false;
     }
-    
     if(tempOperator != null){
         operator = tempOperator;
         tempOperator = null;
@@ -240,21 +241,14 @@ function symbolPressed(button){
 }
 
 function numberPressed(button){
+    if(lastButtonType === "equals"){
+        firstNum = null;
+        secondNum = null;
+    }
+
     lastButtonType = "number";
     repeatNum1= null;
     lastEquate = false;
-
-    // if(lastButtonType === "symbol"){
-    //     if(firstNum != null){
-    //         firstNum = Number(display.textContent);
-    //     }
-    //     else{
-    //         secondNum = Number(button.textContent);
-    //         console.log(secondNum);
-    //     }
-    // }
-
-    
 
     if(lastSymbol != null){
         lastSymbol.parentNode.style.backgroundColor = "orange";
@@ -331,7 +325,6 @@ symbolButtons.forEach(element => {
         },50);
     });
 });
-
 
 //current bugs: does not clear after a sum when the user 
 // tries to operate on two new numbers
