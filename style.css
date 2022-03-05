@@ -6,6 +6,7 @@ body {
     height: 70vh;
     width: 80vw;
     margin: 5em auto;
+    margin-top: 8em;
     background-color: lightgoldenrodyellow;
     box-sizing: border-box;
 }
@@ -13,7 +14,7 @@ body {
 .container {
     display: flex;
     width: auto;
-    max-width: 80%;
+    max-width: 70%;
     height: fill;
     flex: 1 1 auto;
     width: 0;
@@ -127,3 +128,7 @@ button {
 .box.brighter {
     filter: brightness(1.25);
 }
+
+ .darker {
+    filter: brightness(0.75);
+} 
