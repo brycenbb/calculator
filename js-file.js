@@ -43,7 +43,8 @@ function operate(operator, num1, num2){
 }
 
 function plusMinusPressed() {
-    repeatNum = null;
+    repeatNum1 = null;
+    repeatNum2 = null;
     lastEquate = false;
     if((display.textContent.length === 1) && (display.textContent === "0")){
         return;
@@ -108,7 +109,8 @@ function decimalPressed() {
     }
     currentDisplay = currentDisplay + "."
     display.textContent = currentDisplay;
-    repeatNum = null;
+    repeatNum1 = null;
+    repeatNum2 = null;
 }
 function clearPressed() {
     display.textContent = "0";
@@ -116,7 +118,8 @@ function clearPressed() {
     lastDisplay = "";
     firstNum = null;
     secondNum = null;
-    repeatNum = null;
+    repeatNum1 = null;
+    repeatNum2 = null;
     lastEquate = false;
     adjust = 0;
     tempOperator = null;
@@ -129,6 +132,8 @@ function clearPressed() {
     }
 }
 function symbolPressed(button){
+    console.log("firstNum", firstNum);
+    console.log("secondNum", secondNum);
     switch(button.textContent){
         case ("\u00F7"):
             operator = "divide";
@@ -182,18 +187,20 @@ function symbolPressed(button){
 
     //Equals functionality
     if(equate) {
-        // console.log("got inside equate check");
+        console.log("got inside equate check");
         if(lastEquate){
             // console.log("got inside multi equals");
-            display.textContent = operate(operator,firstNum,repeatNum);
-            firstNum = Number(display.textContent);
+            repeatNum2 = Number(display.textContent);
+            display.textContent = operate(operator,repeatNum2,repeatNum1);
+            // firstNum = Number(display.textContent);
+            secondNum = null;
         }
         else if((firstNum != null) && secondNum != null){
                 // console.log("got to right before operator function");
                 display.textContent = operate(operator,firstNum,secondNum);
-                firstNum = Number(display.textContent);
-                repeatNum = secondNum;
-                secondNum = null;    
+                repeatNum1 = secondNum;
+                secondNum = null;
+                firstNum = null;    
                 lastEquate = true;
         }
         
@@ -212,12 +219,20 @@ function symbolPressed(button){
 
 function numberPressed(button){
     lastButtonType = "number";
-    repeatNum = null;
+    repeatNum1= null;
     lastEquate = false;
 
-    if(firstNum != null){
+    if(lastButtonType === "symbol"){
         secondNum = Number(button.textContent);
         // console.log(secondNum);
+    }
+
+    firstNum = Number(display.textContent);
+    
+
+    if(lastSymbol != null){
+        lastSymbol.parentNode.style.backgroundColor = "orange";
+        lastSymbol = null;
     }
 
     lastDisplay = currentDisplay;
@@ -306,7 +321,8 @@ var operator = null;
 var lastSymbol = null;
 var equate = false;
 var lastEquate = false;
-var repeatNum = null;
+var repeatNum1 = null;
+var repeatNum2 = null;
 var lastButtonType = null;
 var lastOperator = null;
 var tempOperator = null;
