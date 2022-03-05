@@ -1,6 +1,5 @@
-//Calculator functions
-// <!-- Before refactoring -->
 
+//Calculator functions
 function add(num1, num2) {
     return trim((num1 + num2).toFixed(6));
 }
@@ -142,21 +141,21 @@ function symbolPressed(button){
             break;
         case ("+"):
             operator = "add";
-            console.log("got to setting teh add flag");
+            // console.log("got to setting teh add flag");
             break;
         case ("="):
             console.log("setting equate to true, = was pressed");
             equate = true;
             secondNum = Number(display.textContent);
-            console.log("firstNum", firstNum);
-            console.log("secondNum", secondNum);
+            // console.log("firstNum", firstNum);
+            // console.log("secondNum", secondNum);
             break;
     }
 
     //Not resetting number if multiple symbols are hit in a row
     if(firstNum === null){
         firstNum = Number(display.textContent);
-        console.log(firstNum);
+        // console.log(firstNum);
     }
 
     if((firstNum != null) && (secondNum != null) && lastButtonType === "number"){
@@ -183,14 +182,14 @@ function symbolPressed(button){
 
     //Equals functionality
     if(equate) {
-        console.log("got inside equate check");
+        // console.log("got inside equate check");
         if(lastEquate){
-            console.log("got inside multi equals");
+            // console.log("got inside multi equals");
             display.textContent = operate(operator,firstNum,repeatNum);
             firstNum = Number(display.textContent);
         }
         else if((firstNum != null) && secondNum != null){
-                console.log("got to right before operator function");
+                // console.log("got to right before operator function");
                 display.textContent = operate(operator,firstNum,secondNum);
                 firstNum = Number(display.textContent);
                 repeatNum = secondNum;
@@ -211,6 +210,63 @@ function symbolPressed(button){
     //End of operator button functionality
 }
 
+function numberPressed(button){
+    lastButtonType = "number";
+    repeatNum = null;
+    lastEquate = false;
+
+    if(firstNum != null){
+        secondNum = Number(button.textContent);
+        // console.log(secondNum);
+    }
+
+    lastDisplay = currentDisplay;
+    currentDisplay = currentDisplay + button.textContent;
+    
+    //Prevents leading zeros
+    if((currentDisplay.charAt(0) === "0") && (currentDisplay.length > 1)){
+        currentDisplay = currentDisplay.slice(1);
+    }
+    display.textContent = currentDisplay;
+}
+
+function readability() {
+    //Accounting for leftmost zero for readability
+    if(display.textContent.charAt(0) === "."){
+        display.textContent = "0" + display.textContent;
+        currentDisplay = display.textContent;
+    }
+    //Making sure negative symbol is the leftmost item
+    if((display.textContent.search('-') != -1) && (display.textContent.charAt(0) != "-")){
+        display.textContent = display.textContent.replace("-","");
+        display.textContent = "-" + display.textContent;
+    }
+
+    //Adjusting size based on how long the display text is
+    if(display.textContent.length > 10){
+        adjust += 0.3;
+        if(display.textContent.length > 20) {
+            adjust -= 0.15;
+        }
+        let newFont = Math.max(8-adjust,2.5);
+        display.style.fontSize = String(newFont) + "vh";
+        // console.log(adjust);
+        // console.log(display.style.fontSize);
+    }
+    else{
+        display.style.fontSize = "8vh";
+    }
+
+    if(display.textContent.length > 30) {
+        setTimeout(function() {
+            display.textContent = "ERROR"
+        },300)
+        const force = new Event('click');
+        const element = document.querySelector('#clear');
+        element.dispatchEvent(force);
+
+    }
+}
 
 //Click transition event, making it flash lighter
 const buttonsNoSymbols = document.querySelectorAll('button:not(.symbol)');
@@ -229,13 +285,17 @@ symbolButtons.forEach(element => {
     element.addEventListener('click',function(){
         element.parentNode.classList.add('darker');
         setTimeout(function() {
-            console.log("got to darker");
+            // console.log("got to darker");
             element.parentNode.classList.remove('darker');
         },50);
     });
 });
 
 
+//current bugs: does not clear after a sum when the user 
+// tries to operate on two new numbers
+// Also the text just gets smaller if the length is over
+// 10 and you hit the +/- button over and over
 
 
 var currentDisplay = "0";
@@ -258,17 +318,11 @@ let display = document.querySelector('.text');
 display.textContent = "0";
 
 
-//current bugs: does not clear after a sum when the user 
-// tries to operate on two new numbers
-// Also the text just gets smaller if the length is over
-// 10 and you hit the +/- button over and over
-
 //Handling button clicks
 const buttons = document.querySelectorAll('button');
 
 buttons.forEach(button => {
     button.addEventListener('click', function() {
-        
         //Decimal button
         if(button.classList.contains('decimal')){
            decimalPressed();
@@ -291,64 +345,9 @@ buttons.forEach(button => {
         }
         //Else is just a normal number
         else{
-            lastButtonType = "number";
-            repeatNum = null;
-            lastEquate = false;
-
-            if(firstNum != null){
-                secondNum = Number(this.textContent);
-                console.log(secondNum);
-            }
-
-            lastDisplay = currentDisplay;
-            currentDisplay = currentDisplay + this.textContent;
-            
-            //Prevents leading zeros
-            if((currentDisplay.charAt(0) === "0") && (currentDisplay.length > 1)){
-                currentDisplay = currentDisplay.slice(1);
-            }
-            display.textContent = currentDisplay;
-            
+            numberPressed(button);
         }
-
-        //Outside conditions checking for type of button
-        //
-        //
-
-        //Accounting for leftmost zero for readability
-        if(display.textContent.charAt(0) === "."){
-            display.textContent = "0" + display.textContent;
-            currentDisplay = display.textContent;
-        }
-        //Making sure negative symbol is the leftmost item
-        if((display.textContent.search('-') != -1) && (display.textContent.charAt(0) != "-")){
-            display.textContent = display.textContent.replace("-","");
-            display.textContent = "-" + display.textContent;
-        }
-
-        //Adjusting size based on how long the display text is
-        if(display.textContent.length > 10){
-            adjust += 0.3;
-            if(display.textContent.length > 20) {
-                adjust -= 0.15;
-            }
-            let newFont = Math.max(8-adjust,2.5);
-            display.style.fontSize = String(newFont) + "vh";
-            console.log(adjust);
-            console.log(display.style.fontSize);
-        }
-        else{
-            display.style.fontSize = "8vh";
-        }
-
-        if(display.textContent.length > 30) {
-            setTimeout(function() {
-                display.textContent = "ERROR"
-            },300)
-            const force = new Event('click');
-            const element = document.querySelector('#clear');
-            element.dispatchEvent(force);
-
-        }
+        //Cleaning up display based on various conditions
+        readability();
     })
 });
