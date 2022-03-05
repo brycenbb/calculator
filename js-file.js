@@ -43,15 +43,196 @@ function operate(operator, num1, num2){
     }
 }
 
-//Click transition event
+function plusMinusPressed() {
+    repeatNum = null;
+    lastEquate = false;
+    if((display.textContent.length === 1) && (display.textContent === "0")){
+        return;
+    }
+
+    if(display.textContent.charAt(0) === "-"){
+        currentDisplay = currentDisplay.replace("-",""); 
+        display.textContent = display.textContent.replace("-","");
+    }
+    else{
+        currentDisplay = "-" + currentDisplay;
+        display.textContent = "-" + display.textContent;
+    }
+}
+
+function percentagePressed() {
+    repeatNum = null;
+    lastEquate = false;
+
+    if((display.textContent.length === 1) && (display.textContent === "0")){
+        return;
+    }
+    if(display.textContent.search(/\./) != -1){
+        let index = display.textContent.search(/\./);
+        display.textContent = display.textContent.replace(".","");
+        if(index < 2){
+            let counter = index;
+
+            //Accounting for leading zeroes in smaller numbers
+            while(counter < 2){
+                counter++;
+                display.textContent = "0" + display.textContent;
+            }
+            display.textContent = "0." + display.textContent;
+            return;
+        }
+        //There are at least 2 numbers to the left of the '.'
+        if(index === 2){
+            display.textContent = "." + display.textContent;
+        }
+        else{
+            display.textContent = display.textContent.slice(0,index-2) + "." + display.textContent.slice(index-2);
+        }
+
+    }
+    //There is no '.' currently in the number
+    else{
+        let length = display.textContent.length -1;
+        if(length === 2) {
+            display.textContent = "." + display.textContent;
+        }
+        else{
+            display.textContent = display.textContent.slice(0,length-1) + "." + display.textContent.slice(length-1);
+        }
+    }
+}
+
+//Button on-press functions
+function decimalPressed() {
+    if(!(display.textContent.search(/\./) === -1)) {
+        return;
+    }
+    currentDisplay = currentDisplay + "."
+    display.textContent = currentDisplay;
+    repeatNum = null;
+}
+function clearPressed() {
+    display.textContent = "0";
+    currentDisplay = "0";
+    lastDisplay = "";
+    firstNum = null;
+    secondNum = null;
+    repeatNum = null;
+    lastEquate = false;
+    adjust = 0;
+    tempOperator = null;
+    lastOperator = null;
+    lastButtonType = null;
+
+    if(lastSymbol != null){
+        lastSymbol.parentNode.style.backgroundColor = "orange";
+        lastSymbol = null;
+    }
+}
+function symbolPressed(button){
+    switch(button.textContent){
+        case ("\u00F7"):
+            operator = "divide";
+            break;
+        case ("\u00D7"):
+            operator = "multiply";
+            break;
+        case ("-"):
+            operator = "subtract";
+            break;
+        case ("+"):
+            operator = "add";
+            console.log("got to setting teh add flag");
+            break;
+        case ("="):
+            console.log("setting equate to true, = was pressed");
+            equate = true;
+            secondNum = Number(display.textContent);
+            console.log("firstNum", firstNum);
+            console.log("secondNum", secondNum);
+            break;
+    }
+
+    //Not resetting number if multiple symbols are hit in a row
+    if(firstNum === null){
+        firstNum = Number(display.textContent);
+        console.log(firstNum);
+    }
+
+    if((firstNum != null) && (secondNum != null) && lastButtonType === "number"){
+        equate = true;
+        tempOperator = operator;
+        operator = lastOperator;
+    }
+    
+    //Highlighting only most recent symbol pressed
+    if(lastSymbol != null){
+        lastSymbol.parentNode.style.backgroundColor = "orange";
+    }
+    button.parentNode.style.backgroundColor = "darkorange";
+    lastSymbol = button;
+
+
+    //Not resetting number if multiple symbols are hit in a row
+    if(firstNum === null){
+        firstNum = Number(display.textContent);
+    }
+
+    //Resetting display for next number input
+    currentDisplay = "0";
+
+    //Equals functionality
+    if(equate) {
+        console.log("got inside equate check");
+        if(lastEquate){
+            console.log("got inside multi equals");
+            display.textContent = operate(operator,firstNum,repeatNum);
+            firstNum = Number(display.textContent);
+        }
+        else if((firstNum != null) && secondNum != null){
+                console.log("got to right before operator function");
+                display.textContent = operate(operator,firstNum,secondNum);
+                firstNum = Number(display.textContent);
+                repeatNum = secondNum;
+                secondNum = null;    
+                lastEquate = true;
+        }
+        
+        equate = false;
+    }
+    if(tempOperator != null){
+        operator = tempOperator;
+        tempOperator = null;
+    }
+    lastButtonType = "symbol";
+    lastOperator = operator;
+
+    return;
+    //End of operator button functionality
+}
+
+
+//Click transition event, making it flash lighter
 const buttonsNoSymbols = document.querySelectorAll('button:not(.symbol)');
 buttonsNoSymbols.forEach(element => {
     element.addEventListener('click', function() {
         element.parentNode.classList.add('brighter');
         setTimeout(function() {
             element.parentNode.classList.remove('brighter');
-        },50)
-    })
+        },50);
+    });
+});
+
+//Click transition event for symbols, making it flash darker
+const symbolButtons = document.querySelectorAll('.symbol');
+symbolButtons.forEach(element => {
+    element.addEventListener('click',function(){
+        element.parentNode.classList.add('darker');
+        setTimeout(function() {
+            console.log("got to darker");
+            element.parentNode.classList.remove('darker');
+        },50);
+    });
 });
 
 
@@ -63,7 +244,6 @@ var secondNum = null;
 var lastDisplay = "";
 var operator = null;
 var lastSymbol = null;
-var lastAC = null;
 var equate = false;
 var lastEquate = false;
 var repeatNum = null;
@@ -71,12 +251,14 @@ var lastButtonType = null;
 var lastOperator = null;
 var tempOperator = null;
 let adjust = 0;
+
+
 //Initializing display
 let display = document.querySelector('.text');
 display.textContent = "0";
 
 
-//current bug: does not clear after a sum when the user 
+//current bugs: does not clear after a sum when the user 
 // tries to operate on two new numbers
 // Also the text just gets smaller if the length is over
 // 10 and you hit the +/- button over and over
@@ -89,163 +271,23 @@ buttons.forEach(button => {
         
         //Decimal button
         if(button.classList.contains('decimal')){
-            if(!(display.textContent.search(/\./) === -1)) {
-                return;
-            }
-            currentDisplay = currentDisplay + "."
-            display.textContent = currentDisplay;
-            repeatNum = null;
+           decimalPressed();
         }
         //Operator buttons
         else if(button.classList.contains('symbol')) {
-            switch(button.textContent){
-                case ("\u00F7"):
-                    operator = "divide";
-                    break;
-                case ("\u00D7"):
-                    operator = "multiply";
-                    break;
-                case ("-"):
-                    operator = "subtract";
-                    break;
-                case ("+"):
-                    operator = "add";
-                    console.log("got to setting teh add flag");
-                    break;
-                case ("="):
-                    console.log("setting equate to true, = was pressed");
-                    equate = true;
-                    secondNum = Number(display.textContent);
-                    console.log("firstNum", firstNum);
-                    console.log("secondNum", secondNum);
-                    break;
-            }
-
-            //Not resetting number if multiple symbols are hit in a row
-            if(firstNum === null){
-                firstNum = Number(display.textContent);
-                console.log(firstNum);
-            }
-
-            if((firstNum != null) && (secondNum != null) && lastButtonType === "number"){
-                equate = true;
-                tempOperator = operator;
-                operator = lastOperator;
-            }
-            
-            //Highlighting only most recent symbol pressed
-            button.parentNode.style.backgroundColor = "darkorange";
-            if(lastSymbol != null){
-                lastSymbol.parentNode.style.backgroundColor = "orange";
-            }
-            lastSymbol = button;
-
-
-            //Not resetting number if multiple symbols are hit in a row
-            if(firstNum === null){
-                firstNum = Number(display.textContent);
-            }
-
-            //Resetting display for next number input
-            currentDisplay = "0";
-
-            //Equals functionality
-            if(equate) {
-                console.log("got inside equate check");
-                if(lastEquate){
-                    console.log("got inside multi equals");
-                    display.textContent = operate(operator,firstNum,repeatNum);
-                    firstNum = Number(display.textContent);
-                }
-                else if((firstNum != null) && secondNum != null){
-                        console.log("got to right before operator function");
-                        display.textContent = operate(operator,firstNum,secondNum);
-                        firstNum = Number(display.textContent);
-                        repeatNum = secondNum;
-                        secondNum = null;    
-                        lastEquate = true;
-                }
-                
-                equate = false;
-            }
-            if(tempOperator != null){
-                operator = tempOperator;
-                tempOperator = null;
-            }
-            lastButtonType = "symbol";
-            lastOperator = operator;
-
-            return;
-            //End of operator button functionality
+            symbolPressed(button);
         }
         //Clear button functionality
         else if(this.textContent === "AC"){
-            display.textContent = "0";
-            currentDisplay = "0";
-            lastDisplay = "";
-            firstNum = null;
-            secondNum = null;
-            repeatNum = null;
-            lastEquate = false;
-            adjust = 0;
-
-            if(lastSymbol != null){
-                lastSymbol.parentNode.style.backgroundColor = "orange";
-                lastSymbol = null;
-            }
+            clearPressed();
         }
         // Alternating between plus/minus
         else if(this.textContent === "\u00B1"){
-            repeatNum = null;
-            lastEquate = false;
-
-            if(display.textContent.charAt(0) === "-"){
-                currentDisplay = currentDisplay.replace("-",""); 
-                display.textContent = display.textContent.replace("-","");
-            }
-            else{
-                currentDisplay = "-" + currentDisplay;
-                display.textContent = "-" + display.textContent;
-            }
+            plusMinusPressed();
         }
         //Percentage button
         else if(button.classList.contains('percentage')){
-            repeatNum = null;
-            lastEquate = false;
-
-            if(display.textContent.search(/\./) != -1){
-                let index = display.textContent.search(/\./);
-                display.textContent = display.textContent.replace(".","");
-                if(index < 2){
-                    let counter = index;
-
-                    //Accounting for leading zeroes in smaller numbers
-                    while(counter < 2){
-                        counter++;
-                        display.textContent = "0" + display.textContent;
-                    }
-                    display.textContent = "0." + display.textContent;
-                    return;
-                }
-                //There are at least 2 numbers to the left of the '.'
-                if(index === 2){
-                    display.textContent = "." + display.textContent;
-                }
-                else{
-                    display.textContent = display.textContent.slice(0,index-2) + "." + display.textContent.slice(index-2);
-                }
-
-            }
-            //There is no '.' currently in the number
-            else{
-                let length = display.textContent.length -1;
-                if(length === 2) {
-                    display.textContent = "." + display.textContent;
-                }
-                else{
-                    display.textContent = display.textContent.slice(0,length-1) + "." + display.textContent.slice(length-1);
-                }
-            }
+            percentagePressed();
         }
         //Else is just a normal number
         else{
