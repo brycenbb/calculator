@@ -80,7 +80,9 @@ function percentagePressed() {
         display.textContent = display.textContent.replace(".","");
         if(index < 2){
             let counter = index;
+            //Actually  I think the bug has to do with counter and index!
 
+            
             //Accounting for leading zeroes in smaller numbers
             while(counter < 2){
                 counter++;
