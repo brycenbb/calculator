@@ -1,3 +1,7 @@
+//Current bug is that significant 0s on small numnbers are deleted, problem is most likely 
+//because of different variables being used in the percentage and number functions.
+
+
 //Calculator functions
 function add(num1, num2) {
     return trim((num1 + num2).toFixed(6));
@@ -107,7 +111,8 @@ function percentagePressed() {
 
 //Button on-press functions
 function decimalPressed() {
-    if(!(display.textContent.search(/\./) === -1)) {
+    //If there is already a decimal, don't add another one
+    if(display.textContent.search(/\./) != -1) {
         return;
     }
     currentDisplay = currentDisplay + "."
@@ -149,7 +154,6 @@ function symbolPressed(button){
             break;
         case ("+"):
             operator = "add";
-            // console.log("got to setting teh add flag");
             break;
         case ("="):
             equate = true;
@@ -325,12 +329,6 @@ symbolButtons.forEach(element => {
         },50);
     });
 });
-
-//current bugs: does not clear after a sum when the user 
-// tries to operate on two new numbers
-// Also the text just gets smaller if the length is over
-// 10 and you hit the +/- button over and over
-
 
 var currentDisplay = "0";
 var firstNum = null;
