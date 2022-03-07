@@ -279,26 +279,27 @@ function readability() {
 
     //Adjusting size based on how long the display text is
     if(display.textContent.length > 10){
-        adjust += 0.3;
+        adjust = (display.textContent.length-11) * 0.3;
         if(display.textContent.length > 20) {
             adjust -= 0.15;
         }
-        let newFont = Math.max(8-adjust,2.5);
+        let newFont = Math.max(8-adjust,4);
         display.style.fontSize = String(newFont) + "vh";
-        // console.log(adjust);
-        // console.log(display.style.fontSize);
     }
     else{
         display.style.fontSize = "8vh";
     }
 
     if(display.textContent.length > 30) {
+        display.style.fontSize = "6.5vh";
+        display.textContent = "ERROR"
+
         setTimeout(function() {
-            display.textContent = "ERROR"
+            clearPressed();
         },300)
-        const force = new Event('click');
-        const element = document.querySelector('#clear');
-        element.dispatchEvent(force);
+        // const force = new Event('click');
+        // const element = document.querySelector('#clear');
+        // element.dispatchEvent(force);
 
     }
 }
@@ -320,7 +321,6 @@ symbolButtons.forEach(element => {
     element.addEventListener('click',function(){
         element.parentNode.classList.add('darker');
         setTimeout(function() {
-            // console.log("got to darker");
             element.parentNode.classList.remove('darker');
         },50);
     });
