@@ -136,6 +136,7 @@ function clearPressed() {
     tempOperator = null;
     lastOperator = null;
     lastButtonType = null;
+    premature = false;
 
     if(lastSymbol != null){
         lastSymbol.parentNode.style.backgroundColor = "orange";
@@ -158,11 +159,22 @@ function symbolPressed(button){
             operator = "add";
             break;
         case ("="):
+            if(firstNum == null){
+                premature = true;
+                console.log("premature equals");
+                break;
+            }
             equate = true;
+            console.log("arg");
             secondNum = Number(display.textContent);
+            console.log("firstNum", firstNum);
+            console.log("second num", secondNum);
             break;
     }
-
+    if(premature){
+        premature = false;
+        return;
+    }
     //Recording first or second number, in that order
     if(firstNum === null){
         firstNum = Number(display.textContent);
