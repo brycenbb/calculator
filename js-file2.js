@@ -1,5 +1,4 @@
-//Current bug is that significant 0s on small numnbers are deleted, problem is most likely 
-//because of different variables being used in the percentage and number functions.
+//Current bug is huge numbers break the calculator, esp when e is used at very huge ones
 
 
 //Calculator functions
