@@ -2,12 +2,15 @@ body {
     display: flex;
     justify-content: center;
     align-items: stretch;
-    height: 70vh;
-    width: 40vw;
+    /* height: 70vh; */
+    /* width: 40vw; */
+    height: 500px;
+    width: 600px;
     margin: 5em auto;
-    margin-top: 8em;
+    margin-top: 7em;
     background-color: lightgoldenrodyellow;
     box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 .container {
@@ -27,7 +30,7 @@ body {
 .display {
     flex: 1.5 1 0;
     width: auto;
-    border: 2px solid black;
+    border: 1px solid black;
     background-color: lightslategrey;
     display: flex;
     justify-content: end;
